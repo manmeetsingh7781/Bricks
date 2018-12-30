@@ -16,6 +16,7 @@ public class App extends JFrame {
         frame.setTitle("Java Application");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(game);
+        frame.setResizable(false);
 
     }
 }
@@ -81,7 +82,8 @@ class Game extends JPanel implements KeyListener, ActionListener {
 
         if(!isBallAlive){
             g.setColor(Color.red);
-            g.drawString("YOU LOST", 600/2, 400);
+            g.setFont(new Font("TimesRoman", Font.PLAIN, 32));
+            g.drawString("YOU LOST", (600/2)-32*2, (400)-32*4);
         }
         g.dispose();
 
@@ -130,7 +132,6 @@ class Game extends JPanel implements KeyListener, ActionListener {
 
 
         // Collision ball and pad
-
         if((ballX) >= (padX-(ball_height-4)) && (ballX) <= (padX+width) && (ballY) >= (padY-ball_height) && (ballY-ball_height) <= (padY+height)){
             ballYdir = -ballYdir;
             isTouched = true;
@@ -147,6 +148,7 @@ class Game extends JPanel implements KeyListener, ActionListener {
 
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
+        
         // Right Arrow
         if(( key == KeyEvent.VK_RIGHT  || key == KeyEvent.VK_D) && isBallAlive) {
             padX += moveSpeed;
