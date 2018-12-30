@@ -5,14 +5,19 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class App extends JFrame {
+interface varibles {
+    int screen_width = 800;
+    int screen_height = 600;
+
+}
+public class App extends JFrame implements varibles {
     private static JFrame frame = new JFrame();
     private static Game game = new Game();
 
 
     public static void main(String[] args) {
         frame.setVisible(true);
-        frame.setSize(600,600);
+        frame.setSize(screen_width, screen_height);
         frame.setTitle("Java Application");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(game);
@@ -22,7 +27,7 @@ public class App extends JFrame {
 }
 
 
-class Game extends JPanel implements KeyListener, ActionListener {
+class Game extends JPanel implements KeyListener, ActionListener, varibles {
     private static Timer timer;
     private static int ballX, ballY, ballXdir, ballYdir, ball_width, ball_height;
     private static int padX, padY, width, height;
@@ -45,14 +50,14 @@ class Game extends JPanel implements KeyListener, ActionListener {
         // Player
         width = 60;
         height = 5;
-        padX = (600/2)-width;
-        padY = 500;
+        padX = (screen_width/2)-width;
+        padY = screen_height-100;
 
         // Ball
         ball_width = 20;
         ball_height = 20;
-        ballX = (600/2)-(ball_width+20);
-        ballY = 300;
+        ballX = (screen_width/2)-(ball_width+20);
+        ballY = screen_height-300;
 
 
         // Ball speed direction
@@ -83,7 +88,7 @@ class Game extends JPanel implements KeyListener, ActionListener {
         if(!isBallAlive){
             g.setColor(Color.red);
             g.setFont(new Font("TimesRoman", Font.PLAIN, 32));
-            g.drawString("YOU LOST", (600/2)-32*2, (400)-32*4);
+            g.drawString("YOU LOST", (screen_width/2)-32*2, (screen_height-200)-32*4);
         }
         g.dispose();
 
@@ -148,7 +153,7 @@ class Game extends JPanel implements KeyListener, ActionListener {
 
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
-        
+
         // Right Arrow
         if(( key == KeyEvent.VK_RIGHT  || key == KeyEvent.VK_D) && isBallAlive) {
             padX += moveSpeed;
