@@ -11,11 +11,11 @@ import java.awt.event.KeyListener;
 import java.io.File;
 import java.util.ArrayList;
 
-interface varibles {
+interface variables {
     int screen_width = 800;
     int screen_height = 600;
 }
-public class App extends JFrame implements varibles {
+public class App extends JFrame implements variables {
 
     //  The Main frame
     private static JFrame frame = new JFrame();
@@ -54,7 +54,7 @@ public class App extends JFrame implements varibles {
 }
 
 
-class Game extends JPanel implements KeyListener, ActionListener, varibles {
+class Game extends JPanel implements KeyListener, ActionListener, variables {
 
     // These are intilizers for the game so we could able to use it everywhere in the class
     private static Timer timer;
