@@ -63,10 +63,11 @@ class Game extends JPanel implements KeyListener, ActionListener, varibles {
     private static int ballX, ballY, ballXdir, ballYdir, ball_width, ball_height;
 
     // Player
-    private static int padX, padY, width, height, moveSpeed = 30;
+    private static int padX, padY, width, height, moveSpeed = 30, counter = 0, opacity = 35;
 
 
     // Image
+
     private static ArrayList<Integer> image_x = new ArrayList<Integer>(), image_y = new ArrayList<Integer>();
 
     // Game
@@ -79,6 +80,11 @@ class Game extends JPanel implements KeyListener, ActionListener, varibles {
     private static  int[]   img1_size = {loadImage(img1).getIconWidth(),loadImage(img1).getIconHeight() };
     private static  int[]  img2_size = {loadImage(img2).getIconWidth(),loadImage(img2).getIconHeight() };
     private static  int[]  img3_size = {loadImage(img3).getIconWidth(),loadImage(img3).getIconHeight() };
+
+    private static Image loaded_img1 = loadImage(img1).getImage();
+    private static Image loaded_img2 = loadImage(img2).getImage();
+    private static Image loaded_img3 = loadImage(img3).getImage();
+
 
 
 
@@ -107,24 +113,30 @@ class Game extends JPanel implements KeyListener, ActionListener, varibles {
         ballXdir = 3;
         ballYdir = 3;
 
-
-        // Drawing bricks pattern across the screen
-        for(int x = 40; x <= screen_height*1.2;x+=(screen_width/40)) {
-            for(int y = 40; y <= 180; y+=60){
-                image_x.add(x);
-                image_y.add(y);
-                if( x== screen_height*1.2 && y <= 180){
-                    isReady = true;
-                }
-            }
-        }
-
+        drawBricks();
 
 
         timer.start();
     }
 
 
+    private void drawBricks(){
+        // Drawing bricks pattern across the screen
+        for(int x = 1; x <= 31;x++) {
+            for(int y = 1; y <= 3;y++) {
+                image_x.add(x * 45);
+                image_y.add(y * 40);
+                isReady = true;
+
+            }
+
+        }
+
+
+
+
+
+    }
     private void PlayMusic(String input){
 
         try{
@@ -150,54 +162,28 @@ class Game extends JPanel implements KeyListener, ActionListener, varibles {
     }
 
     private static ImageIcon loadImage(String input){
-        ImageIcon img = new ImageIcon(input);
-        return img;
+        return new ImageIcon(input);
 
     }
-    public void paint(Graphics g){
+    public void paint(Graphics g) {
 
         isStarted = true;
         g.setColor(Color.black);
-        g.fillRect(0,0, super.getWidth(), super.getHeight());
+        g.fillRect(0, 0, super.getWidth(), super.getHeight());
 
         // ball
         g.setColor(Color.white);
         g.fillOval(ballX, ballY, ball_width, ball_height);
 
+
+
         // Padel
         g.setColor(Color.ORANGE);
-        g.fillOval(padX, padY, width, height);
-
-        // if all the numbers has been added then draw the images
-        if(isReady){
+        g.drawRect(padX, padY, width, height);
 
 
 
-            for(int x: image_x) {
-                for (int y : image_y) {
-                    if (x < 300) {
-                        g.drawImage(loadImage(img1).getImage(), x, y, null);
-                    }
-
-                    if (x < 500 && x > 300) {
-                        g.drawImage(loadImage(img2).getImage(), x, y, null);
-
-                    }
-
-                    if (x > 500) {
-                        g.drawImage(loadImage(img3).getImage(), x, y, null);
-                    }
-
-                    // Ball Collision with tile
-                    if((ballX) >= (y) && (ballX) <= (y+width) && (ballY) >= (x-ball_height) && (ballY-ball_height) <= (x+height)){
-                        ballYdir = -ballYdir;
-                        System.out.println("TOUCHED THE TILE");
-                    }
-
-                }
-            }
-        }
-
+        Tiles((Graphics2D) g);
         // If ball drops then game over
         if(!isBallAlive){
             g.setColor(Color.red);
@@ -208,12 +194,23 @@ class Game extends JPanel implements KeyListener, ActionListener, varibles {
         }
         g.dispose();
 
+        // Collision ball and pad
+        if((ballX) >= (padX-(ball_height-4)) && (ballX) <= (padX+width) && (ballY) >= (padY-ball_height) && (ballY-ball_height) <= (padY+height)){
+            ballYdir = -ballYdir;
+            isTouched = true;
+
+            g.fillRect(padX, padY, width, height);
+
+            PlayMusic("src\\main\\java\\sounds\\yelp.wav");
+        }
+
+
+
     }
 
     public void actionPerformed(ActionEvent e) {
         timer.start();
-//        ballY = 190;
-//        ballX = 40;
+
 
         if(isBallAlive) {
             ballY += ballYdir;
@@ -256,12 +253,6 @@ class Game extends JPanel implements KeyListener, ActionListener, varibles {
         }
 
 
-        // Collision ball and pad
-        if((ballX) >= (padX-(ball_height-4)) && (ballX) <= (padX+width) && (ballY) >= (padY-ball_height) && (ballY-ball_height) <= (padY+height)){
-            ballYdir = -ballYdir;
-            isTouched = true;
-            PlayMusic("src\\main\\java\\sounds\\yelp.wav");
-        }
 
         if(isTouched && isBallAlive){
             ballX += ballXdir;
@@ -273,6 +264,69 @@ class Game extends JPanel implements KeyListener, ActionListener, varibles {
 
     }
 
+    private void Tiles(Graphics2D g) {
+        // Ball and Tile Collision
+        for(int x = 0; x< image_x.size(); x++) {
+            for(int y = 0; y < image_y.size();y++){
+
+
+            }
+        }
+        // if all the numbers has been added then draw the images
+        if (isReady) {
+
+            for (int x : image_x) {
+                for (int y : image_y) {
+
+                    if ((ballX) >= (x - img1_size[0]) && (ballX) <= (x  + img1_size[0]) && (ballY) >= (y  - img1_size[0]) && (ballY - height) <= (y  + img1_size[1])) {
+
+                        g.fillRect(x, y, img1_size[0], img1_size[1]);
+                        ballYdir = -ballYdir;
+                        System.out.println("TAPPED TILE " + x + " " + y);
+
+                    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    if (x < 300) {
+                        //g.drawImage(loaded_img1, x, y, null);
+                        g.setColor(Color.cyan);
+                        g.drawRect(x, y, img1_size[0], img1_size[1]);
+
+                    }
+
+                    if (x < 500 && x > 300) {
+                        //g.drawImage(loaded_img2, x, y, null);
+                        g.setColor(Color.red);
+                        g.drawRect(x, y, img1_size[0], img1_size[1]);
+
+
+                    }
+
+                    if (x > 500) {
+                        //g.drawImage(loaded_img3, x, y, null);
+                        g.setColor(Color.orange);
+                        g.drawRect(x, y, img1_size[0], img1_size[1]);
+                    }
+                }
+
+            }
+
+        }
+    }
 
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
@@ -287,6 +341,7 @@ class Game extends JPanel implements KeyListener, ActionListener, varibles {
             padX -= moveSpeed;
         }
     }
+
 
 
     public void keyReleased(KeyEvent e) {}
