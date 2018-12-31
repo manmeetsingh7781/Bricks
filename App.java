@@ -1,4 +1,4 @@
-import javax.imageio.ImageIO;
+
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -8,7 +8,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -43,7 +42,7 @@ public class App extends JFrame implements varibles {
         frame.add(game);
 
         // Setting image Icon
-        ImageIcon img_icon = new ImageIcon("C:\\Users\\Honey Singh\\IdeaProjects\\Java_Course_Udamy\\src\\bricks-game.jpg");
+        ImageIcon img_icon = new ImageIcon("src\\bricks-game.jpg");
 
         // Getting the image preview from the ImageIcon and setting it up
         frame.setIconImage(img_icon.getImage());
@@ -68,14 +67,14 @@ class Game extends JPanel implements KeyListener, ActionListener, varibles {
 
 
     // Image
-    private static ArrayList<Integer> image_x = new ArrayList<>(), image_y = new ArrayList<>();
+    private static ArrayList<Integer> image_x = new ArrayList<Integer>(), image_y = new ArrayList<Integer>();
 
     // Game
     private boolean isStarted = false, isBallAlive = true, isTouched = false, isReady = false;
 
-    private static  String img1 = "C:\\Users\\Honey Singh\\IdeaProjects\\Java_Course_Udamy\\src\\images\\brick-1.png";
-    private static  String img2 = "C:\\Users\\Honey Singh\\IdeaProjects\\Java_Course_Udamy\\src\\images\\brick-2_0.png";
-    private static  String img3 = "C:\\Users\\Honey Singh\\IdeaProjects\\Java_Course_Udamy\\src\\images\\brick-1.png";
+    private static  String img1 = "src\\main\\java\\images\\brick-1.png";
+    private static  String img2 = "src\\main\\java\\images\\brick-2_0.png";
+    private static  String img3 = img1;
 
     private static  int[]   img1_size = {loadImage(img1).getIconWidth(),loadImage(img1).getIconHeight() };
     private static  int[]  img2_size = {loadImage(img2).getIconWidth(),loadImage(img2).getIconHeight() };
@@ -115,7 +114,7 @@ class Game extends JPanel implements KeyListener, ActionListener, varibles {
                 image_x.add(x);
                 image_y.add(y);
                 if( x== screen_height*1.2 && y <= 180){
-                   isReady = true;
+                    isReady = true;
                 }
             }
         }
@@ -204,7 +203,7 @@ class Game extends JPanel implements KeyListener, ActionListener, varibles {
             g.setColor(Color.red);
             g.setFont(new Font("TimesRoman", Font.PLAIN, 32));
             g.drawString("YOU LOST", (screen_width/2)-32*2, (screen_height-200)-32*4);
-            PlayMusic("C:\\Users\\Honey Singh\\IdeaProjects\\Java_Course_Udamy\\src\\sounds\\oops.wav");
+            PlayMusic("src\\main\\java\\sounds\\oops.wav");
             timer.stop();
         }
         g.dispose();
@@ -238,8 +237,8 @@ class Game extends JPanel implements KeyListener, ActionListener, varibles {
 
         // floor fallback
         if(ballY >= screen_height && ballY <= screen_height+1){
-           isBallAlive = false;
-    }
+            isBallAlive = false;
+        }
 
 
 
@@ -261,16 +260,16 @@ class Game extends JPanel implements KeyListener, ActionListener, varibles {
         if((ballX) >= (padX-(ball_height-4)) && (ballX) <= (padX+width) && (ballY) >= (padY-ball_height) && (ballY-ball_height) <= (padY+height)){
             ballYdir = -ballYdir;
             isTouched = true;
-            PlayMusic("C:\\Users\\Honey Singh\\IdeaProjects\\Java_Course_Udamy\\src\\sounds\\yelp.wav");
+            PlayMusic("src\\main\\java\\sounds\\yelp.wav");
         }
 
         if(isTouched && isBallAlive){
-                 ballX += ballXdir;
+            ballX += ballXdir;
         }
 
 
-            // Re drawing after every delay timer
-            repaint();
+        // Re drawing after every delay timer
+        repaint();
 
     }
 
