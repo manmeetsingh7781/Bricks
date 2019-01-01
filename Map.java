@@ -15,33 +15,13 @@ class Map {
             }
         }
         tileHeight = 32;
-        tileWidth = 80;
+        tileWidth =  80;
 
     } // Constructor ends here
-
-    void draw(Graphics2D g){
-     for(int col = 0; col < map.length; col++){
-            for(int row = 0; row < map[0].length;row++){
-
-                // Bricks
-                    g.setColor(Color.green);
-                    g.drawRect(col*tileWidth + map[col][row], row*tileHeight + map[col][row], tileWidth, tileHeight);
-
-                // Black Border around Bricks
-                    g.setStroke(new BasicStroke(4));
-                    g.setColor(Color.black);
-                    g.fillRect(col*tileWidth + map[col][row], row*tileHeight + map[col][row], tileWidth, tileHeight);
-
-            }
-       }
-    }
-
+    
     public void ifCrashed(int val, int col, int row){
         map[col][row] = val;
 
     }
-
-
-
-
+}
 }
