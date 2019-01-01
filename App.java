@@ -1,3 +1,4 @@
+package GameBricks;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -8,7 +9,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
-import java.util.ArrayList;
+
 
 interface variables {
     int screen_width = 800;
@@ -32,7 +33,7 @@ public class App extends JFrame implements variables {
         frame.setSize(screen_width, screen_height);
 
         // Title of the Main Frame
-        frame.setTitle("Java Application");
+        frame.setTitle("Bricks");
 
         // The close method
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -41,7 +42,7 @@ public class App extends JFrame implements variables {
         frame.add(game);
 
         // Setting image Icon
-        ImageIcon img_icon = new ImageIcon("src\\bricks-game.jpg");
+        ImageIcon img_icon = new ImageIcon("src\\GameBricks\\bricks-game.jpg");
 
         // Getting the image preview from the ImageIcon and setting it up
         frame.setIconImage(img_icon.getImage());
@@ -62,10 +63,15 @@ class Game extends JPanel implements KeyListener, ActionListener, variables {
 
     // Player
     private int col = 7, row = 3;
-    private int padX, padY, width, height, moveSpeed = 30, counter = 0, opacity = 35, tiles= col*row, score = 0;
+    private int padX;
+    private int padY;
+    private int width;
+    private int height;
+    private int tiles= col*row;
+    private int score = 0;
 
     // Game
-    private boolean isStarted = false, isBallAlive = true, isTouched = false, isReady = false;
+    private boolean isStarted = false, isBallAlive = true, isTouched = false, didWon = false;
     private Map map;
 
 
@@ -144,10 +150,11 @@ class Game extends JPanel implements KeyListener, ActionListener, variables {
         g.drawRect(padX, padY, width, height);
 
         // If ball drops then game over
-        if (!isBallAlive) {
+        if (!isBallAlive && !didWon) {
+
             g.setColor(Color.red);
             drawScores((Graphics2D) g, "YOU LOST", (screen_width / 2) - 32 * 2, (screen_height - 200) - 32 * 4,32);
-            PlayMusic("src\\sounds\\yelp.wav");
+            PlayMusic("src\\GameBricks\\sounds\\yelp.wav");
             timer.stop();
         }
 
@@ -180,6 +187,8 @@ class Game extends JPanel implements KeyListener, ActionListener, variables {
                 }
 
                 if(tiles <= 0){
+                    isBallAlive = false;
+                    didWon = true;
                     g.setColor(Color.green);
                     drawScores((Graphics2D) g,"YOU WON", (screen_width / 2) - 32 * 2, (screen_height - 200) - 32 * 4,32);
                 }
@@ -193,7 +202,7 @@ class Game extends JPanel implements KeyListener, ActionListener, variables {
 
             g.fillRect(padX, padY, width, height);
 
-            PlayMusic("src\\sounds\\tap.wav");
+            PlayMusic("src\\GameBricks\\sounds\\tap.wav");
 
         }
         // Collision ball and pad made by me
@@ -258,6 +267,7 @@ class Game extends JPanel implements KeyListener, ActionListener, variables {
         int key = e.getKeyCode();
 
         // Right Arrow
+        int moveSpeed = 30;
         if(( key == KeyEvent.VK_RIGHT  || key == KeyEvent.VK_D) && isBallAlive) {
             padX += moveSpeed;
         }

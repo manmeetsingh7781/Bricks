@@ -1,4 +1,4 @@
-import java.awt.*;
+package GameBricks;
 
 class Map implements variables{
 
