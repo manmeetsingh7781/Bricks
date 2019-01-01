@@ -1,4 +1,3 @@
-
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -63,33 +62,20 @@ class Game extends JPanel implements KeyListener, ActionListener, variables {
     private static int ballX, ballY, ballXdir, ballYdir, ball_width, ball_height;
 
     // Player
-    private static int padX, padY, width, height, moveSpeed = 30, counter = 0, opacity = 35;
-
-
-    // Image
-
-    private static ArrayList<Integer> image_x = new ArrayList<Integer>(), image_y = new ArrayList<Integer>();
+    private int col = 16, row = 3;
+    private int padX, padY, width, height, moveSpeed = 30, counter = 0, opacity = 35, tiles= col*row;
 
     // Game
     private boolean isStarted = false, isBallAlive = true, isTouched = false, isReady = false;
 
-    private static  String img1 = "src\\main\\java\\images\\brick-1.png";
-    private static  String img2 = "src\\main\\java\\images\\brick-2_0.png";
-    private static  String img3 = img1;
-
-    private static  int[]   img1_size = {loadImage(img1).getIconWidth(),loadImage(img1).getIconHeight() };
-    private static  int[]  img2_size = {loadImage(img2).getIconWidth(),loadImage(img2).getIconHeight() };
-    private static  int[]  img3_size = {loadImage(img3).getIconWidth(),loadImage(img3).getIconHeight() };
-
-    private static Image loaded_img1 = loadImage(img1).getImage();
-    private static Image loaded_img2 = loadImage(img2).getImage();
-    private static Image loaded_img3 = loadImage(img3).getImage();
+    private Map map;
 
 
 
 
 
     Game(){
+
         int delay = 10;
         addKeyListener(this);
         setFocusable(true);
@@ -113,30 +99,13 @@ class Game extends JPanel implements KeyListener, ActionListener, variables {
         ballXdir = 3;
         ballYdir = 3;
 
-        drawBricks();
-
-
+        map = new  Map(col,row);
         timer.start();
-    }
-
-
-    private void drawBricks(){
-        // Drawing bricks pattern across the screen
-        for(int x = 1; x <= 31;x++) {
-            for(int y = 1; y <= 3;y++) {
-                image_x.add(x * 45);
-                image_y.add(y * 40);
-                isReady = true;
-
-            }
-
-        }
-
-
 
 
 
     }
+
     private void PlayMusic(String input){
 
         try{
@@ -167,6 +136,7 @@ class Game extends JPanel implements KeyListener, ActionListener, variables {
     }
     public void paint(Graphics g) {
 
+
         isStarted = true;
         g.setColor(Color.black);
         g.fillRect(0, 0, super.getWidth(), super.getHeight());
@@ -175,46 +145,75 @@ class Game extends JPanel implements KeyListener, ActionListener, variables {
         g.setColor(Color.white);
         g.fillOval(ballX, ballY, ball_width, ball_height);
 
-
-
         // Padel
         g.setColor(Color.ORANGE);
         g.drawRect(padX, padY, width, height);
 
 
 
-        Tiles((Graphics2D) g);
+
         // If ball drops then game over
-        if(!isBallAlive){
+        if (!isBallAlive) {
             g.setColor(Color.red);
             g.setFont(new Font("TimesRoman", Font.PLAIN, 32));
-            g.drawString("YOU LOST", (screen_width/2)-32*2, (screen_height-200)-32*4);
-            PlayMusic("src\\main\\java\\sounds\\oops.wav");
+            g.drawString("YOU LOST", (screen_width / 2) - 32 * 2, (screen_height - 200) - 32 * 4);
+            PlayMusic("src\\sounds\\yelp.wav");
             timer.stop();
         }
-        g.dispose();
 
-        // Collision ball and pad
-        if((ballX) >= (padX-(ball_height-4)) && (ballX) <= (padX+width) && (ballY) >= (padY-ball_height) && (ballY-ball_height) <= (padY+height)){
+        Rectangle ball = new Rectangle(ballX, ballY, ball_width, ball_height);
+        Rectangle pad = new Rectangle(padX, padY, width, height);
+
+
+        map.draw((Graphics2D) g);
+
+        for(int col = 0; col < map.map.length; col++){
+            for(int row = 0; row < map.map[0].length; row++){
+
+                g.setColor(Color.green);
+                g.fillRect(col*map.tileWidth +map.map[col][row], row*map.tileHeight + map.map[col][row], map.tileWidth, map.tileHeight);
+
+                g.setColor(Color.black);
+                g.drawRect(col*map.tileWidth +map.map[col][row], row*map.tileHeight + map.map[col][row], map.tileWidth, map.tileHeight);
+
+
+                Rectangle rectangle = new Rectangle(col*map.tileWidth + map.map[col][row], row*map.tileHeight + map.map[col][row], map.tileWidth, map.tileHeight);
+                Rectangle ballRect = new Rectangle(ballX, ballY, ball_width, ball_height);
+
+
+                if(ballRect.intersects(rectangle)) {
+                        ballXdir = -ballXdir;
+                        ballYdir = -ballYdir;
+                        tiles--;
+                        map.ifCrashed(-100, col, row);
+                }
+
+
+            }
+        }
+        // Java code
+        if (ball.intersects(pad)) {
             ballYdir = -ballYdir;
             isTouched = true;
 
             g.fillRect(padX, padY, width, height);
 
-            PlayMusic("src\\main\\java\\sounds\\yelp.wav");
+            PlayMusic("src\\sounds\\tap.wav");
+
         }
-
-
+        // Collision ball and pad made by me
+        //if((ballX) >= (padX-(ball_height-4)) && (ballX) <= (padX+width) && (ballY) >= (padY-ball_height) && (ballY-ball_height) <= (padY+height)){}
+        g.dispose();
 
     }
+
+
 
     public void actionPerformed(ActionEvent e) {
         timer.start();
 
-
         if(isBallAlive) {
             ballY += ballYdir;
-
 
             if(ballX >= super.getWidth()-20){
                 ballXdir = -ballXdir;
@@ -227,19 +226,12 @@ class Game extends JPanel implements KeyListener, ActionListener, variables {
             if(ballY <= 0 ){
                 ballYdir = -ballYdir;
             }
-
-
-
         }
 
         // floor fallback
         if(ballY >= screen_height && ballY <= screen_height+1){
             isBallAlive = false;
         }
-
-
-
-
 
         if(isStarted && isBallAlive) {
             if (padX <= 0) {
@@ -253,80 +245,15 @@ class Game extends JPanel implements KeyListener, ActionListener, variables {
         }
 
 
-
         if(isTouched && isBallAlive){
             ballX += ballXdir;
         }
-
 
         // Re drawing after every delay timer
         repaint();
 
     }
 
-    private void Tiles(Graphics2D g) {
-        // Ball and Tile Collision
-        for(int x = 0; x< image_x.size(); x++) {
-            for(int y = 0; y < image_y.size();y++){
-
-
-            }
-        }
-        // if all the numbers has been added then draw the images
-        if (isReady) {
-
-            for (int x : image_x) {
-                for (int y : image_y) {
-
-                    if ((ballX) >= (x - img1_size[0]) && (ballX) <= (x  + img1_size[0]) && (ballY) >= (y  - img1_size[0]) && (ballY - height) <= (y  + img1_size[1])) {
-
-                        g.fillRect(x, y, img1_size[0], img1_size[1]);
-                        ballYdir = -ballYdir;
-                        System.out.println("TAPPED TILE " + x + " " + y);
-
-                    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                    if (x < 300) {
-                        //g.drawImage(loaded_img1, x, y, null);
-                        g.setColor(Color.cyan);
-                        g.drawRect(x, y, img1_size[0], img1_size[1]);
-
-                    }
-
-                    if (x < 500 && x > 300) {
-                        //g.drawImage(loaded_img2, x, y, null);
-                        g.setColor(Color.red);
-                        g.drawRect(x, y, img1_size[0], img1_size[1]);
-
-
-                    }
-
-                    if (x > 500) {
-                        //g.drawImage(loaded_img3, x, y, null);
-                        g.setColor(Color.orange);
-                        g.drawRect(x, y, img1_size[0], img1_size[1]);
-                    }
-                }
-
-            }
-
-        }
-    }
 
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
@@ -341,8 +268,6 @@ class Game extends JPanel implements KeyListener, ActionListener, variables {
             padX -= moveSpeed;
         }
     }
-
-
 
     public void keyReleased(KeyEvent e) {}
     public void keyTyped(KeyEvent e) {}
