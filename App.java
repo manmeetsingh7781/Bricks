@@ -48,7 +48,6 @@ public class App extends JFrame implements variables {
 
         // Setting Window resizable to false
         frame.setResizable(false);
-
     }
 }
 
@@ -63,16 +62,12 @@ class Game extends JPanel implements KeyListener, ActionListener, variables {
 
     // Player
     private int col = 7, row = 3;
-    private int padX, padY, width, height, moveSpeed = 30, counter = 0, opacity = 35, tiles= col*row;
+    private int padX, padY, width, height, moveSpeed = 30, counter = 0, opacity = 35, tiles= col*row, score = 0;
 
     // Game
     private boolean isStarted = false, isBallAlive = true, isTouched = false, isReady = false;
-
     private Map map;
-
-
-
-
+    
 
     Game(){
 
@@ -101,8 +96,7 @@ class Game extends JPanel implements KeyListener, ActionListener, variables {
 
         map = new  Map(col,row);
         timer.start();
-
-
+        
 
     }
 
@@ -148,10 +142,7 @@ class Game extends JPanel implements KeyListener, ActionListener, variables {
         // Padel
         g.setColor(Color.ORANGE);
         g.drawRect(padX, padY, width, height);
-
-
-
-
+        
         // If ball drops then game over
         if (!isBallAlive) {
             g.setColor(Color.red);
@@ -164,7 +155,8 @@ class Game extends JPanel implements KeyListener, ActionListener, variables {
         Rectangle ball = new Rectangle(ballX, ballY, ball_width, ball_height);
         Rectangle pad = new Rectangle(padX, padY, width, height);
 
-
+        drawScores((Graphics2D) g, "Score: " +score, screen_width-140, 30);
+        drawScores((Graphics2D) g, "Tiles left: "+tiles, 10, 30);
         map.draw((Graphics2D) g);
 
         for(int col = 0; col < map.map.length; col++){
@@ -182,12 +174,17 @@ class Game extends JPanel implements KeyListener, ActionListener, variables {
 
 
                 if(ballRect.intersects(rectangle)) {
-
                         ballYdir = -ballYdir;
                         tiles--;
+                        score+=2;
                         map.ifCrashed(-100, col, row);
                 }
-
+                
+                if(tiles <= 0){
+                    g.setColor(Color.green);
+                    g.setFont(new Font("TimesRoman", Font.PLAIN, 32));
+                    g.drawString("YOU WON", (screen_width / 2) - 32 * 2, (screen_height - 200) - 32 * 4);
+                }
 
             }
         }
@@ -207,7 +204,10 @@ class Game extends JPanel implements KeyListener, ActionListener, variables {
 
     }
 
-
+    private void drawScores(Graphics2D g, String score, int x,int y) {
+        g.setFont(new Font( "Times New Roman", Font.PLAIN, 22));
+        g.drawString(""+score, x,y);
+    }
 
     public void actionPerformed(ActionEvent e) {
         timer.start();
