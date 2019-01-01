@@ -1,6 +1,6 @@
 import java.awt.*;
 
-class Map {
+class Map implements variables{
 
     public int[][] map;
     int tileHeight, tileWidth;
@@ -11,17 +11,17 @@ class Map {
         map = new int[col][row];
         for(int x = 0; x < col; x++){
             for(int y = 0; y < row; y++){
-                map[x][y] = 800/8;
+                map[x][y] = screen_width/8;
             }
         }
-        tileHeight = 32;
-        tileWidth =  80;
+        tileHeight = screen_width/25;
+        tileWidth =  screen_width/10;
 
     } // Constructor ends here
-    
+
     public void ifCrashed(int val, int col, int row){
         map[col][row] = val;
 
     }
-}
+
 }

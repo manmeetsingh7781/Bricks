@@ -67,7 +67,7 @@ class Game extends JPanel implements KeyListener, ActionListener, variables {
     // Game
     private boolean isStarted = false, isBallAlive = true, isTouched = false, isReady = false;
     private Map map;
-    
+
 
     Game(){
 
@@ -96,7 +96,7 @@ class Game extends JPanel implements KeyListener, ActionListener, variables {
 
         map = new  Map(col,row);
         timer.start();
-        
+
 
     }
 
@@ -142,12 +142,11 @@ class Game extends JPanel implements KeyListener, ActionListener, variables {
         // Padel
         g.setColor(Color.ORANGE);
         g.drawRect(padX, padY, width, height);
-        
+
         // If ball drops then game over
         if (!isBallAlive) {
             g.setColor(Color.red);
-            g.setFont(new Font("TimesRoman", Font.PLAIN, 32));
-            g.drawString("YOU LOST", (screen_width / 2) - 32 * 2, (screen_height - 200) - 32 * 4);
+            drawScores((Graphics2D) g, "YOU LOST", (screen_width / 2) - 32 * 2, (screen_height - 200) - 32 * 4,32);
             PlayMusic("src\\sounds\\yelp.wav");
             timer.stop();
         }
@@ -155,9 +154,9 @@ class Game extends JPanel implements KeyListener, ActionListener, variables {
         Rectangle ball = new Rectangle(ballX, ballY, ball_width, ball_height);
         Rectangle pad = new Rectangle(padX, padY, width, height);
 
-        drawScores((Graphics2D) g, "Score: " +score, screen_width-140, 30);
-        drawScores((Graphics2D) g, "Tiles left: "+tiles, 10, 30);
-        map.draw((Graphics2D) g);
+        drawScores((Graphics2D) g, "Score: " +score, screen_width-140, 30, 22);
+        drawScores((Graphics2D) g, "Tiles left: "+tiles, 10, 30, 22);
+
 
         for(int col = 0; col < map.map.length; col++){
             for(int row = 0; row < map.map[0].length; row++){
@@ -179,11 +178,10 @@ class Game extends JPanel implements KeyListener, ActionListener, variables {
                         score+=2;
                         map.ifCrashed(-100, col, row);
                 }
-                
+
                 if(tiles <= 0){
                     g.setColor(Color.green);
-                    g.setFont(new Font("TimesRoman", Font.PLAIN, 32));
-                    g.drawString("YOU WON", (screen_width / 2) - 32 * 2, (screen_height - 200) - 32 * 4);
+                    drawScores((Graphics2D) g,"YOU WON", (screen_width / 2) - 32 * 2, (screen_height - 200) - 32 * 4,32);
                 }
 
             }
@@ -204,8 +202,9 @@ class Game extends JPanel implements KeyListener, ActionListener, variables {
 
     }
 
-    private void drawScores(Graphics2D g, String score, int x,int y) {
-        g.setFont(new Font( "Times New Roman", Font.PLAIN, 22));
+    private void drawScores(Graphics2D g, String score, int x,int y, int font) {
+
+        g.setFont(new Font( "Times New Roman", Font.PLAIN, font));
         g.drawString(""+score, x,y);
     }
 
