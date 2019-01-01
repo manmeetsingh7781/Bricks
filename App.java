@@ -62,7 +62,7 @@ class Game extends JPanel implements KeyListener, ActionListener, variables {
     private static int ballX, ballY, ballXdir, ballYdir, ball_width, ball_height;
 
     // Player
-    private int col = 16, row = 3;
+    private int col = 7, row = 3;
     private int padX, padY, width, height, moveSpeed = 30, counter = 0, opacity = 35, tiles= col*row;
 
     // Game
@@ -170,7 +170,7 @@ class Game extends JPanel implements KeyListener, ActionListener, variables {
         for(int col = 0; col < map.map.length; col++){
             for(int row = 0; row < map.map[0].length; row++){
 
-                g.setColor(Color.green);
+                g.setColor(Color.cyan);
                 g.fillRect(col*map.tileWidth +map.map[col][row], row*map.tileHeight + map.map[col][row], map.tileWidth, map.tileHeight);
 
                 g.setColor(Color.black);
@@ -182,7 +182,7 @@ class Game extends JPanel implements KeyListener, ActionListener, variables {
 
 
                 if(ballRect.intersects(rectangle)) {
-                        ballXdir = -ballXdir;
+
                         ballYdir = -ballYdir;
                         tiles--;
                         map.ifCrashed(-100, col, row);

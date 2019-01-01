@@ -4,7 +4,6 @@ class Map {
 
     public int[][] map;
     int tileHeight, tileWidth;
-    Rectangle rect;
 
     // Creating a value holder for Row and cols
         //  <--x-->   y
@@ -12,11 +11,11 @@ class Map {
         map = new int[col][row];
         for(int x = 0; x < col; x++){
             for(int y = 0; y < row; y++){
-                map[x][y] = 10;
+                map[x][y] = 800/8;
             }
         }
         tileHeight = 32;
-        tileWidth = 48;
+        tileWidth = 80;
 
     } // Constructor ends here
 
@@ -26,12 +25,12 @@ class Map {
 
                 // Bricks
                     g.setColor(Color.green);
-                    g.fillRect(col*tileWidth + map[col][row], row*tileHeight + map[col][row], tileWidth, tileHeight);
+                    g.drawRect(col*tileWidth + map[col][row], row*tileHeight + map[col][row], tileWidth, tileHeight);
 
                 // Black Border around Bricks
-                    g.setStroke(new BasicStroke(3));
+                    g.setStroke(new BasicStroke(4));
                     g.setColor(Color.black);
-                    g.drawRect(col*tileWidth + map[col][row], row*tileHeight + map[col][row], tileWidth, tileHeight);
+                    g.fillRect(col*tileWidth + map[col][row], row*tileHeight + map[col][row], tileWidth, tileHeight);
 
             }
        }
